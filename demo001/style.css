@@ -1,0 +1,20 @@
+.form {
+    border: 1px solid black;
+    padding: 10px;
+    width: 30vw;
+    height: 30vh;
+}
+.label, .btn {
+    font-weight: bold;
+    color: black;
+}
+.label-container {
+    border: 4px solid black;
+    padding: 10px;
+  }
+@media (min-width: 600px) {
+    .label-container {
+      width: 50%;
+      height: auto;
+    }
+}

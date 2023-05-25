@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>簡易匯率計算器</title>
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <script>
+    $(document).ready(function() {
+      // 設置API URL和API密鑰
+      var api_key = '5a50dfb951df22b49fb8c944';
+      var api_url = `https://v6.exchangerate-api.com/v6/${api_key}/codes`;
+
+      // 發送請求並獲取貨幣列表
+      fetch(api_url)
+        .then(response => response.json())
+        .then(data => {
+          // 遍歷貨幣列表並將選項添加到選擇框中
+          data.supported_codes.forEach(([code, name]) => {
+            var selected = (code === 'USD') ? 'selected' : '';
+            $('#base-currency').append(`<option value="${code}" ${selected}>${name} (${code})</option>`);
+            $('#target-currency').append(`<option value="${code}">${name} (${code})</option>`);
+          });
+        });
+
+      // 添加提交事件處理程序
+      $('form').on('submit', function(event) {
+        event.preventDefault();
+        var url = $(this).attr('action');
+        var data = $(this).serialize();
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: data
+        })
+        .then(response => response.text())
+        .then(text => {
+          // 在這裡處理服務器返回的數據
+          $('#result').html(text);
+        });
+      });
+    });
+</script>
+<form action="exrate.php" method="post">
+  <div class="label-container">
+    <label for="base-currency">基準貨幣:</label>
+    <select name="base-currency" id="base-currency">
+    </select>
+    <hr>
+    <label for="target-currency">目標貨幣:</label>
+    <select name="target-currency" id="target-currency">
+    </select>
+    <br>
+    <label for="amount">輸入金額:</label>
+      <input type="number" name="amount" id="amount">
+    <br><hr>
+      <input type="submit" value="提交" class="btn">
+      <input type="reset" value="重設" class="btn">
+  </div>
+</form>
+<br><hr>
+<div id="result"></div>
+</body>
+</html>
